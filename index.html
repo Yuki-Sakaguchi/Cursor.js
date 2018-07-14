@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cursor.js</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        position: relative;
+      }
+      .point {
+        width: 100px;
+        height: 100px;
+        float: left;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cursor.js</h1>
+    <p>classにjs-cursorをつけて、data-typeに変化後の値を入れる</p>
+    <div class="wrapper">
+      <div class="point js-cursor" data-type="none">none</div>
+      <div class="point js-cursor" data-type="comma">comma</div>
+      <div class="point js-cursor" data-type="dot">dot</div>
+      <div class="point js-cursor" data-type="close">close</div>
+      <div class="point js-cursor" data-type="right">right</div>
+      <div class="point js-cursor" data-type="left">left</div>
+    </div>
+    <div id="cursor-fixed" class="cursor-fixed">
+        <div id="cursor-fixed__pointer" class="cursor-fixed__pointer">
+            <div class="pointer-content"></div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="./js/cursor.js"></script>
+    <script>
+        // ポインターの変更
+        $(function() {
+            var cursor = new Cursor({
+                defaultPointerDelete: false
+            });
+            var $cursor = $(cursor.elCursor);
+            var $pointer = $(cursor.elPointer);
+            var $pointerContent = $pointer.children('.pointer-content');
+
+            var cursorTypeList = [
+                {
+                    type: 'none',
+                },
+                {
+                    type: 'comma',
+                },
+                {
+                    type: 'dot',
+                },
+                {
+                    type: 'close',
+                },
+                {
+                    type: 'right',
+                },
+                {
+                    type: 'left',
+                }
+            ];
+
+            var addClass = '';
+            var curentType = '';
+            var activeClass = 'active';
+            var disableClass = 'disable';
+            $('.js-cursor').hover(function(e) {
+                var $this = $(this);
+                var curentType = $this.data('type');
+                var target = cursorTypeList.filter(function(e) {
+                    return curentType == e.type;
+                });
+
+                if (!curentType || curentType.length == 0) {
+                    return false;
+                }
+
+                if (curentType == 'none') {
+                    // 消す
+                    $cursor.addClass(disableClass);
+                } else {
+                    // 四角いやつ
+                    addClass = curentType;
+                    $pointerContent.addClass(addClass);
+                    $cursor.addClass(activeClass);
+                }
+            }, function() {
+                $pointerContent.removeClass(addClass);
+                $cursor.removeClass(activeClass);
+                $cursor.removeClass(disableClass);
+                addClass == '';
+                curentType = '';
+            });
+        });
+    </script>
+  </body>
+</html>
